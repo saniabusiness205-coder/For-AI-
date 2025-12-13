@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Properties - Real Estate Agent</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">Premium Properties</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#properties">Properties</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="admin.html" class="admin-link">Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero">
+        <div class="hero-content">
+            <h1>Find Your Dream Home</h1>
+            <p>Discover the best properties in your area</p>
+            <div class="search-box">
+                <input type="text" placeholder="Enter location...">
+                <button>Search Properties</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Properties Section with Carousel -->
+    <section id="properties" class="properties">
+        <video class="properties-video" autoplay muted loop>
+            <source src="1.mp4" type="video/mp4">
+        </video>
+        <div class="container">
+            <h2>Featured Properties</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="house">House</button>
+                <button class="filter-btn" data-filter="apartment">Apartment</button>
+                <button class="filter-btn" data-filter="condo">Condo</button>
+            </div>
+            
+            <!-- Single Property Carousel -->
+            <div class="property-carousel-container">
+                <button class="carousel-btn prev-btn" id="prevBtn">❮</button>
+                <div class="property-carousel" id="propertyCarousel">
+                    <!-- Single property will be displayed here -->
+                </div>
+                <button class="carousel-btn next-btn" id="nextBtn">❯</button>
+            </div>
+
+            <!-- ROI Calculator -->
+            <div class="roi-calculator">
+                <h3>ROI Calculator</h3>
+                <div class="roi-container">
+                    <div class="roi-input-group">
+                        <label for="propertyPrice">Property Price ($)</label>
+                        <input type="number" id="propertyPrice" placeholder="Enter property price" value="500000">
+                    </div>
+                    <div class="roi-input-group">
+                        <label for="downPayment">Down Payment (%)</label>
+                        <input type="number" id="downPayment" placeholder="Enter down payment %" value="20" min="0" max="100">
+                    </div>
+                    <div class="roi-input-group">
+                        <label for="interestRate">Interest Rate (%)</label>
+                        <input type="number" id="interestRate" placeholder="Enter interest rate" value="7" step="0.1">
+                    </div>
+                    <div class="roi-input-group">
+                        <label for="loanTerm">Loan Term (years)</label>
+                        <input type="number" id="loanTerm" placeholder="Enter loan term" value="30" min="1" max="50">
+                    </div>
+                    <div class="roi-input-group">
+                        <label for="monthlyRent">Expected Monthly Rent ($)</label>
+                        <input type="number" id="monthlyRent" placeholder="Enter monthly rent" value="2500">
+                    </div>
+                    <button class="btn-primary" onclick="calculateROI()">Calculate ROI</button>
+                </div>
+                <div id="roiResults" class="roi-results hidden">
+                    <div class="roi-result-item">
+                        <span>Monthly Payment:</span>
+                        <strong id="monthlyPayment">$0</strong>
+                    </div>
+                    <div class="roi-result-item">
+                        <span>Monthly Profit:</span>
+                        <strong id="monthlyProfit">$0</strong>
+                    </div>
+                    <div class="roi-result-item">
+                        <span>Annual ROI:</span>
+                        <strong id="annualROI">0%</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section with Agent Profile -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>Meet Our Agent</h2>
+            <div class="about-content">
+                <!-- Agent Profile -->
+                <div class="agent-profile">
+                    <div class="agent-image-container">
+                        <img id="agentImage" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500&h=400&fit=crop" alt="Agent Profile">
+                    </div>
+                    <div class="agent-info">
+                        <h3 id="agentName">John Smith</h3>
+                        <p class="agent-title">Senior Real Estate Agent</p>
+                        <div class="agent-credentials">
+                            <div class="credential">
+                                <span class="label">RERA License:</span>
+                                <span class="value" id="reraLicense">RE/2024/0001234</span>
+                            </div>
+                        </div>
+                        <p id="agentBio" class="agent-bio">Experienced real estate professional dedicated to helping clients find their perfect home with integrity and expertise.</p>
+                        
+                        <!-- Achievements -->
+                        <div class="achievements">
+                            <div class="achievement-item">
+                                <span class="number" id="propertiesSold">500+</span>
+                                <span class="label">Properties Sold</span>
+                            </div>
+                            <div class="achievement-item">
+                                <span class="number" id="happyClients">1000+</span>
+                                <span class="label">Happy Clients</span>
+                            </div>
+                            <div class="achievement-item">
+                                <span class="number" id="yearsExp">15+</span>
+                                <span class="label">Years Experience</span>
+                            </div>
+                        </div>
+
+                        <!-- Client Reviews (Non-editable) -->
+                        <div class="reviews-section">
+                            <h4>Client Reviews ⭐</h4>
+                            <div class="reviews-container" id="reviewsContainer">
+                                <!-- Reviews loaded from storage -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            
+            <div class="contact-grid">
+                <!-- Direct Chat with WhatsApp -->
+                <div class="contact-card whatsapp-card">
+                    <div class="contact-card-header">
+                        <h3>💬 WhatsApp Chat</h3>
+                        <span class="whatsapp-badge">Instant</span>
+                    </div>
+                    <p>Connect with our agent directly via WhatsApp for quick responses</p>
+                    <form id="whatsappForm">
+                        <div class="form-group">
+                            <input type="text" id="wpName" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="wpEmail" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="wpMessage" placeholder="Your Message..." rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn whatsapp-btn">📱 Chat on WhatsApp</button>
+                    </form>
+                </div>
+
+                <!-- Scheduling System -->
+                <div class="contact-card schedule-card">
+                    <div class="contact-card-header">
+                        <h3>📅 Schedule Meeting</h3>
+                        <span class="schedule-badge">Book Now</span>
+                    </div>
+                    <p>Book a convenient time to meet with our real estate agent</p>
+                    <form id="scheduleForm">
+                        <div class="form-group">
+                            <input type="text" id="scheduleName" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="scheduleEmail" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="date" id="scheduleDate" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="time" id="scheduleTime" required>
+                        </div>
+                        <button type="submit" class="submit-btn">Confirm Schedule</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <h3>Connect With Me</h3>
+            <p>&copy; 2024 Premium Properties. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://facebook.com/premiumproperties" target="_blank" title="Facebook">📘</a>
+                <a href="https://twitter.com/premiumproperties" target="_blank" title="Twitter">𝕏</a>
+                <a href="https://instagram.com/premiumproperties" target="_blank" title="Instagram">📷</a>
+                <a href="https://linkedin.com/company/premiumproperties" target="_blank" title="LinkedIn">💼</a>
+                <a href="https://youtube.com/@premiumproperties" target="_blank" title="YouTube">▶️</a>
+                <a href="https://tiktok.com/@premiumproperties" target="_blank" title="TikTok">🎵</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Property Modal -->
+    <div id="propertyModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="api-service.js"></script>
+    <script src="whatsapp-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

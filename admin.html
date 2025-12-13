@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Premium Properties</title>
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>Admin Panel</h1>
+                <p>Premium Properties Management</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+                <p class="login-hint">Demo: username: admin | password: admin123</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Premium Properties</h2>
+                <button class="close-sidebar">✕</button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-link active" data-section="dashboard">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-link" data-section="properties">
+                    <span class="icon">🏠</span>
+                    <span>Properties</span>
+                </a>
+                <a href="#" class="nav-link" data-section="add-property">
+                    <span class="icon">➕</span>
+                    <span>Add Property</span>
+                </a>
+                <a href="#" class="nav-link" data-section="settings">
+                    <span class="icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="logout-btn">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Top Bar -->
+            <div class="topbar">
+                <button class="menu-toggle">☰</button>
+                <div class="topbar-right">
+                    <span class="agent-name">Welcome, Agent</span>
+                    <button class="profile-btn">👤</button>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <div class="section-header">
+                    <h1>Dashboard</h1>
+                </div>
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <h3>Total Properties</h3>
+                        <p class="stat-number" id="totalProperties">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Listings</h3>
+                        <p class="stat-number" id="activeListings">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>This Month</h3>
+                        <p class="stat-number" id="thisMonth">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Properties Section -->
+            <section id="properties" class="section">
+                <div class="section-header">
+                    <h1>Manage Properties</h1>
+                    <div class="search-bar">
+                        <input type="text" id="propertySearch" placeholder="Search properties...">
+                    </div>
+                </div>
+                <div class="properties-table-container">
+                    <table class="properties-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Price</th>
+                                <th>Location</th>
+                                <th>Beds</th>
+                                <th>Baths</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="propertiesTableBody">
+                            <!-- Properties will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Add Property Section -->
+            <section id="add-property" class="section">
+                <div class="section-header">
+                    <h1>Add New Property</h1>
+                </div>
+                <form id="addPropertyForm" class="property-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="propertyName">Property Name *</label>
+                            <input type="text" id="propertyName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="propertyType">Property Type *</label>
+                            <select id="propertyType" required>
+                                <option value="">Select Type</option>
+                                <option value="house">House</option>
+                                <option value="apartment">Apartment</option>
+                                <option value="condo">Condo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="propertyPrice">Price *</label>
+                            <input type="number" id="propertyPrice" placeholder="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="propertyAddress">Location/Address *</label>
+                            <input type="text" id="propertyAddress" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="propertyBeds">Bedrooms *</label>
+                            <input type="number" id="propertyBeds" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="propertyBaths">Bathrooms *</label>
+                            <input type="number" id="propertyBaths" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="propertySqft">Square Feet *</label>
+                            <input type="number" id="propertySqft" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="propertyDescription">Description</label>
+                        <textarea id="propertyDescription" rows="4" placeholder="Property description..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="propertyAmenities">Amenities (comma separated)</label>
+                        <input type="text" id="propertyAmenities" placeholder="e.g., Pool, Gym, Parking, Garden">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="propertyImage">Property Image *</label>
+                        <div class="image-upload">
+                            <input type="file" id="propertyImage" accept="image/*" required>
+                            <div id="imagePreview" class="image-preview"></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Add Property</button>
+                </form>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="section">
+                <div class="section-header">
+                    <h1>Settings</h1>
+                </div>
+                <div class="settings-container">
+                    <div class="settings-group">
+                        <h3>Agent Profile</h3>
+                        <form id="agentProfileForm" class="settings-form">
+                            <div class="form-group">
+                                <label for="agentName">Agent Name</label>
+                                <input type="text" id="agentName" placeholder="Your full name">
+                            </div>
+                            <div class="form-group">
+                                <label for="agentTitle">Professional Title</label>
+                                <input type="text" id="agentTitle" placeholder="e.g., Senior Real Estate Agent">
+                            </div>
+                            <div class="form-group">
+                                <label for="reraLicense">RERA License</label>
+                                <input type="text" id="reraLicense" placeholder="e.g., RE/2024/0001234">
+                            </div>
+                            <div class="form-group">
+                                <label for="agentBio">Professional Bio</label>
+                                <textarea id="agentBio" placeholder="Write your professional bio..." rows="4"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="propertiesSold">Properties Sold</label>
+                                    <input type="text" id="propertiesSold" placeholder="e.g., 500+">
+                                </div>
+                                <div class="form-group">
+                                    <label for="happyClients">Happy Clients</label>
+                                    <input type="text" id="happyClients" placeholder="e.g., 1000+">
+                                </div>
+                                <div class="form-group">
+                                    <label for="yearsExp">Years of Experience</label>
+                                    <input type="text" id="yearsExp" placeholder="e.g., 15+">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="agentImage">Profile Image</label>
+                                <div class="image-upload">
+                                    <input type="file" id="agentImage" accept="image/*">
+                                    <div id="agentImagePreview" class="image-preview"></div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary">Save Profile</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>WhatsApp Configuration</h3>
+                        <form id="whatsappForm" class="settings-form">
+                            <div class="form-group">
+                                <label for="whatsappNumber">Agent WhatsApp Number *</label>
+                                <input type="tel" id="whatsappNumber" placeholder="e.g., +1 (555) 123-4567" required>
+                                <small style="color: #666; margin-top: 5px; display: block;">Enter your WhatsApp number. Client inquiries will be sent to this number.</small>
+                            </div>
+                            <button type="submit" class="btn-primary">Save WhatsApp Number</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Account Settings</h3>
+                        <form id="settingsForm" class="settings-form">
+                            <div class="form-group">
+                                <label for="settingsUsername">Username</label>
+                                <input type="text" id="settingsUsername" placeholder="Your username">
+                            </div>
+                            <div class="form-group">
+                                <label for="settingsEmail">Email</label>
+                                <input type="email" id="settingsEmail" placeholder="Your email">
+                            </div>
+                            <div class="form-group">
+                                <label for="settingsPhone">Phone</label>
+                                <input type="tel" id="settingsPhone" placeholder="Your phone number">
+                            </div>
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Change Password</h3>
+                        <form id="passwordForm" class="settings-form">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword" placeholder="Current password">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword" placeholder="New password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm Password</label>
+                                <input type="password" id="confirmPassword" placeholder="Confirm password">
+                            </div>
+                            <button type="submit" class="btn-primary">Update Password</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-group danger-zone">
+                        <h3>Danger Zone</h3>
+                        <p>Delete all properties and reset the admin panel</p>
+                        <button id="resetBtn" class="btn-danger">Reset All Data</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Edit Property Modal -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Property</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="editPropertyForm" class="property-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editPropertyName">Property Name *</label>
+                        <input type="text" id="editPropertyName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPropertyType">Property Type *</label>
+                        <select id="editPropertyType" required>
+                            <option value="">Select Type</option>
+                            <option value="house">House</option>
+                            <option value="apartment">Apartment</option>
+                            <option value="condo">Condo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editPropertyPrice">Price *</label>
+                        <input type="number" id="editPropertyPrice" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPropertyAddress">Location/Address *</label>
+                        <input type="text" id="editPropertyAddress" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editPropertyBeds">Bedrooms *</label>
+                        <input type="number" id="editPropertyBeds" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPropertyBaths">Bathrooms *</label>
+                        <input type="number" id="editPropertyBaths" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPropertySqft">Square Feet *</label>
+                        <input type="number" id="editPropertySqft" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editPropertyDescription">Description</label>
+                    <textarea id="editPropertyDescription" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editPropertyAmenities">Amenities (comma separated)</label>
+                    <input type="text" id="editPropertyAmenities" placeholder="e.g., Pool, Gym, Parking, Garden">
+                </div>
+
+                <div class="form-group">
+                    <label for="editPropertyImage">Property Image</label>
+                    <div class="image-upload">
+                        <input type="file" id="editPropertyImage" accept="image/*">
+                        <div id="editImagePreview" class="image-preview"></div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                    <button type="button" class="btn-secondary cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification hidden"></div>
+
+    <script src="api-service.js"></script>
+    <script src="whatsapp-config.js"></script>
+    <script src="admin-script.js"></script>
+</body>
+</html>

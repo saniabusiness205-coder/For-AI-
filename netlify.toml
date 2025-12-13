@@ -1,0 +1,45 @@
+# Netlify Configuration for Premium Properties Frontend
+
+# Build settings
+[build]
+  # Since frontend is pure HTML/CSS/JS, no build command needed
+  command = "echo 'Frontend ready to deploy'"
+  # Directory to deploy
+  publish = "."
+
+# Redirect rules for single-page app
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Performance optimizations
+[build.environment]
+  # Set to production for optimizations
+  NODE_ENV = "production"
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    X-XSS-Protection = "1; mode=block"
+
+# Specific cache rules for static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# CSS and JS files
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Content-Type = "text/css; charset=utf-8"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
