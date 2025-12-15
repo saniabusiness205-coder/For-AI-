@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Properties - Real Estate Agent</title>
+    <title>AI</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -17,6 +18,7 @@
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
                 <li><a href="admin.html" class="admin-link">Admin</a></li>
+                <li style="display: none;"><a href="developer.html" class="developer-link">Developer</a></li>
             </ul>
             <div class="hamburger">
                 <span></span>
@@ -145,6 +147,33 @@
                         <!-- Client Reviews (Non-editable) -->
                         <div class="reviews-section">
                             <h4>Client Reviews ⭐</h4>
+                            
+                            <!-- Review Submission Form -->
+                            <div class="review-form-container">
+                                <h5>Share Your Experience</h5>
+                                <form id="reviewForm" class="review-form">
+                                    <div class="form-group">
+                                        <input type="text" id="reviewerName" placeholder="Your Name" required maxlength="50">
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea id="reviewerText" placeholder="Write your review..." rows="3" required maxlength="300"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reviewerRating">Rating: </label>
+                                        <div class="rating-stars">
+                                            <span class="star" data-rating="1">★</span>
+                                            <span class="star" data-rating="2">★</span>
+                                            <span class="star" data-rating="3">★</span>
+                                            <span class="star" data-rating="4">★</span>
+                                            <span class="star" data-rating="5">★</span>
+                                        </div>
+                                        <input type="hidden" id="reviewerRating" value="5">
+                                    </div>
+                                    <button type="submit" class="submit-btn">Submit Review</button>
+                                </form>
+                            </div>
+
+                            <!-- Display Reviews -->
                             <div class="reviews-container" id="reviewsContainer">
                                 <!-- Reviews loaded from storage -->
                             </div>
@@ -208,24 +237,60 @@
             </div>
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <h3>Connect With Me</h3>
-            <p>&copy; 2024 Premium Properties. All rights reserved.</p>
-            <div class="social-links">
-                <a href="https://facebook.com/premiumproperties" target="_blank" title="Facebook">📘</a>
-                <a href="https://twitter.com/premiumproperties" target="_blank" title="Twitter">𝕏</a>
-                <a href="https://instagram.com/premiumproperties" target="_blank" title="Instagram">📷</a>
-                <a href="https://linkedin.com/company/premiumproperties" target="_blank" title="LinkedIn">💼</a>
-                <a href="https://youtube.com/@premiumproperties" target="_blank" title="YouTube">▶️</a>
-                <a href="https://tiktok.com/@premiumproperties" target="_blank" title="TikTok">🎵</a>
+<!-- Footer Section -->
+    <footer>
+        <div class="footer-content">
+            <!-- SOCIAL LINKS SECTION - Copy this section to your website -->
+            <div class="footer-section social-links">
+                <h3>Follow Us</h3>
+                <p>Connect with us on social media for updates and news.</p>
+                <br>
+                <div class="social-icons">
+                    <!-- Twitter -->
+                    <a href="https://twitter.com/NASA" target="_blank" class="social-icon twitter" title="Follow us on Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    
+                    <!-- Facebook -->
+                    <a href="https://www.facebook.com/NationalGeographic" target="_blank" class="social-icon facebook" title="Like us on Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    
+                    <!-- Instagram -->
+                    <a href="https://www.instagram.com/chrishemsworth/" target="_blank" class="social-icon instagram" title="Follow us on Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    
+                    <!-- LinkedIn -->
+                    <a href="https://www.linkedin.com/in/satyanadella/" target="_blank" class="social-icon linkedin" title="Connect on LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    
+                    <!-- YouTube -->
+                    <a href="https://www.youtube.com/user/TED" target="_blank" class="social-icon youtube" title="Subscribe on YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    
+                    <!-- TikTok -->
+                    <a href="https://www.tiktok.com/@nasa" target="_blank" class="social-icon tiktok" title="Follow us on TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    
+                    <!-- Telegram -->
+                    <a href="https://t.me/techcrunch" target="_blank" class="social-icon telegram" title="Join us on Telegram">
+                        <i class="fab fa-telegram-plane"></i>
+                    </a>
+                </div>
             </div>
+            <!-- END SOCIAL LINKS SECTION -->
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Your Company Name. All rights reserved.</p>
         </div>
     </footer>
-
-    <!-- Property Modal -->
+<!-- END SOCIAL LINKS SECTION -->
+            <!-- Property Modal -->
     <div id="propertyModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>

@@ -1,3 +1,10 @@
+// Helper function to escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // Default sample properties data
 const defaultProperties = [
     {
@@ -106,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupContactTabs();
     loadAgentProfile();
     loadClientReviews();
+    initializeReviews();
 });
 
 // Display properties in grid
@@ -170,19 +178,7 @@ function setupFilterButtons() {
 
 // Mobile menu toggle
 function setupMobileMenu() {
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
-    
-    hamburger.addEventListener('click', function() {
-        navLinks.classList.toggle('active');
-    });
-    
-    // Close menu when link is clicked
-    navLinks.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function() {
-            navLinks.classList.remove('active');
-        });
-    });
+    // Hamburger menu functionality removed - navbar is now always visible on all screen sizes
 }
 
 // Open property modal
@@ -261,6 +257,9 @@ function setupContactForm() {
             
             // Validate form
             if (name && email && message) {
+                // Track WhatsApp click and lead
+                trackWhatsAppFromForm();
+                
                 // Create WhatsApp message with client details
                 const whatsappMessage = `*New Inquiry from Premium Properties Website*\n\n📋 *Client Details:*\n👤 Name: ${name}\n📧 Email: ${email}\n\n💬 *Message:*\n${message}`;
                 
@@ -613,6 +612,9 @@ function setupContactTabs() {
             
             if (name && email && date && time) {
                 try {
+                    // Track form submission and lead
+                    trackContactFormSubmission();
+                    
                     // Send to backend API
                     const response = await apiService.scheduleMeeting({
                         name,
@@ -655,3 +657,263 @@ function setupContactTabs() {
     }
 }
 
+// REVIEWS SYSTEM
+function initializeReviews() {
+    loadReviews();
+    setupReviewForm();
+    setupRatingStars();
+}
+
+function loadReviews() {
+    const reviews = JSON.parse(localStorage.getItem('clientReviews')) || [];
+    const reviewsContainer = document.getElementById('reviewsContainer');
+    
+    if (reviews.length === 0) {
+        reviewsContainer.innerHTML = '<p style="color: #999; font-size: 14px;">No reviews yet. Be the first to share your experience!</p>';
+        return;
+    }
+    
+    reviewsContainer.innerHTML = reviews.map(review => `
+        <div class="review-item">
+            <div class="review-author">${escapeHtml(review.name)}</div>
+            <div class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</div>
+            <div class="review-text">${escapeHtml(review.text)}</div>
+        </div>
+    `).join('');
+}
+
+function setupReviewForm() {
+    const reviewForm = document.getElementById('reviewForm');
+    if (!reviewForm) return;
+    
+    reviewForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('reviewerName').value.trim();
+        const text = document.getElementById('reviewerText').value.trim();
+        const rating = parseInt(document.getElementById('reviewerRating').value);
+        
+        if (!name || !text || !rating) {
+            alert('Please fill in all fields');
+            return;
+        }
+        
+        // Get existing reviews
+        const reviews = JSON.parse(localStorage.getItem('clientReviews')) || [];
+        
+        // Add new review
+        reviews.push({
+            name: name,
+            text: text,
+            rating: rating,
+            date: new Date().toLocaleDateString()
+        });
+        
+        // Save to localStorage
+        localStorage.setItem('clientReviews', JSON.stringify(reviews));
+        
+        // Clear form
+        this.reset();
+        document.getElementById('reviewerRating').value = 5;
+        resetRatingStars();
+        
+        // Reload reviews
+        loadReviews();
+        
+        // Show success message
+        alert('Thank you for your review!');
+    });
+}
+
+function setupRatingStars() {
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('reviewerRating');
+    
+    if (!stars || !ratingInput) return;
+    
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = this.dataset.rating;
+            ratingInput.value = rating;
+            updateStarDisplay(rating);
+        });
+        
+        star.addEventListener('mouseover', function() {
+            const rating = this.dataset.rating;
+            updateStarDisplay(rating);
+        });
+    });
+    
+    // Reset stars on mouse leave
+    const ratingStars = document.querySelector('.rating-stars');
+    if (ratingStars) {
+        ratingStars.addEventListener('mouseleave', function() {
+            updateStarDisplay(ratingInput.value);
+        });
+    }
+}
+
+function updateStarDisplay(rating) {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+        if (parseInt(star.dataset.rating) <= rating) {
+            star.classList.add('active');
+        } else {
+            star.classList.remove('active');
+        }
+    });
+}
+
+function resetRatingStars() {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => star.classList.remove('active'));
+}
+
+// Developer Panel Access - Hidden keyboard shortcut
+let devKeySequence = '';
+const devAccessKey = 'dev';
+
+document.addEventListener('keydown', function(event) {
+    // Only track lowercase letters
+    if (event.key && event.key.length === 1) {
+        devKeySequence += event.key.toLowerCase();
+        // Keep only the last 3 characters
+        if (devKeySequence.length > 3) {
+            devKeySequence = devKeySequence.slice(-3);
+        }
+        // Check if user typed 'dev'
+        if (devKeySequence === devAccessKey) {
+            // Access the developer panel
+            window.location.href = 'developer.html';
+            devKeySequence = ''; // Reset
+        }
+    }
+});
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ===== WEBSITE ANALYTICS TRACKING =====
+// Tracks visitor interactions for the admin dashboard Insights panel
+// Data is stored in localStorage with timestamps for time-based filtering
+
+/**
+ * Record an analytics event
+ * @param {string} eventType - Type of event: 'visitor', 'whatsapp', 'form', or 'lead'
+ */
+function recordAnalyticsEvent(eventType) {
+    const STORAGE_KEY = 'website_analytics_events';
+    
+    try {
+        // Get existing events
+        let events = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        
+        // Create new event with timestamp
+        const event = {
+            type: eventType,
+            timestamp: new Date().toISOString(),
+            date: new Date().toDateString()
+        };
+        
+        // Add event to array
+        events.push(event);
+        
+        // Save back to localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+        
+        console.log(`Analytics: Recorded ${eventType} event`);
+    } catch (error) {
+        console.error('Error recording analytics event:', error);
+    }
+}
+
+/**
+ * Track a visitor (page load)
+ * Records one visitor per session/page load
+ */
+function trackVisitor() {
+    const SESSION_KEY = 'analytics_visitor_tracked_' + new Date().toDateString();
+    
+    // Only track one visitor per unique day
+    if (!sessionStorage.getItem(SESSION_KEY)) {
+        recordAnalyticsEvent('visitor');
+        sessionStorage.setItem(SESSION_KEY, 'true');
+    }
+}
+
+/**
+ * Track WhatsApp button click
+ */
+function trackWhatsAppClick() {
+    recordAnalyticsEvent('whatsapp');
+}
+
+/**
+ * Track form submission
+ */
+function trackFormSubmission() {
+    recordAnalyticsEvent('form');
+}
+
+/**
+ * Get analytics data filtered by time period
+ * @param {string} period - 'lifetime', '30days', or 'today'
+ * @param {string} eventType - Specific event type to filter, or 'all' for all types
+ * @returns {number} Count of matching events
+ */
+function getAnalyticsCount(period, eventType = 'all') {
+    const STORAGE_KEY = 'website_analytics_events';
+    
+    try {
+        let events = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        const now = new Date();
+        const today = now.toDateString();
+        
+        // Filter by event type if specified
+        if (eventType !== 'all') {
+            events = events.filter(e => e.type === eventType);
+        }
+        
+        // Filter by time period
+        if (period === 'today') {
+            events = events.filter(e => e.date === today);
+        } else if (period === '30days') {
+            const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+            events = events.filter(e => new Date(e.timestamp) >= thirtyDaysAgo);
+        }
+        // 'lifetime' includes all events - no filtering
+        
+        return events.length;
+    } catch (error) {
+        console.error('Error getting analytics count:', error);
+        return 0;
+    }
+}
+
+/**
+ * Track WhatsApp form submission
+ * Called from the WhatsApp form handler
+ */
+function trackWhatsAppFromForm() {
+    trackWhatsAppClick();
+    // Lead is recorded as both 'whatsapp' and 'lead'
+    recordAnalyticsEvent('lead');
+}
+
+/**
+ * Track contact form submission
+ * Called from the contact form handler
+ */
+function trackContactFormSubmission() {
+    trackFormSubmission();
+    // Lead is recorded as both 'form' and 'lead'
+    recordAnalyticsEvent('lead');
+}
+
+// Track visitor on page load
+document.addEventListener('DOMContentLoaded', function() {
+    trackVisitor();
+}, { once: true });

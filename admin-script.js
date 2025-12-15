@@ -149,6 +149,32 @@ function loadDashboard() {
     document.getElementById('totalProperties').textContent = total;
     document.getElementById('activeListings').textContent = active;
     document.getElementById('thisMonth').textContent = thisMonth;
+
+    // Load Website Insights
+    loadWebsiteInsights();
+}
+
+// WEBSITE INSIGHTS
+function loadWebsiteInsights() {
+    // Update Visitors metrics
+    document.getElementById('visitorsLifetime').textContent = getAnalyticsCount('lifetime', 'visitor');
+    document.getElementById('visitors30Days').textContent = getAnalyticsCount('30days', 'visitor');
+    document.getElementById('visitorsToday').textContent = getAnalyticsCount('today', 'visitor');
+
+    // Update Leads metrics (total of WhatsApp + Form)
+    document.getElementById('leadsLifetime').textContent = getAnalyticsCount('lifetime', 'lead');
+    document.getElementById('leads30Days').textContent = getAnalyticsCount('30days', 'lead');
+    document.getElementById('leadsToday').textContent = getAnalyticsCount('today', 'lead');
+
+    // Update WhatsApp Clicks metrics
+    document.getElementById('whatsappLifetime').textContent = getAnalyticsCount('lifetime', 'whatsapp');
+    document.getElementById('whatsapp30Days').textContent = getAnalyticsCount('30days', 'whatsapp');
+    document.getElementById('whatsappToday').textContent = getAnalyticsCount('today', 'whatsapp');
+
+    // Update Form Submissions metrics
+    document.getElementById('formLifetime').textContent = getAnalyticsCount('lifetime', 'form');
+    document.getElementById('form30Days').textContent = getAnalyticsCount('30days', 'form');
+    document.getElementById('formToday').textContent = getAnalyticsCount('today', 'form');
 }
 
 // PROPERTIES TABLE
@@ -525,6 +551,42 @@ function savePropertiesToStorage(properties) {
 function syncPropertiesToMainSite() {
     const properties = loadPropertiesFromStorage();
     localStorage.setItem('websiteProperties', JSON.stringify(properties));
+}
+
+// ANALYTICS HELPERS FOR ADMIN DASHBOARD
+/**
+ * Get analytics data filtered by time period
+ * @param {string} period - 'lifetime', '30days', or 'today'
+ * @param {string} eventType - Specific event type to filter, or 'all' for all types
+ * @returns {number} Count of matching events
+ */
+function getAnalyticsCount(period, eventType = 'all') {
+    const STORAGE_KEY = 'website_analytics_events';
+    
+    try {
+        let events = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        const now = new Date();
+        const today = now.toDateString();
+        
+        // Filter by event type if specified
+        if (eventType !== 'all') {
+            events = events.filter(e => e.type === eventType);
+        }
+        
+        // Filter by time period
+        if (period === 'today') {
+            events = events.filter(e => e.date === today);
+        } else if (period === '30days') {
+            const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+            events = events.filter(e => new Date(e.timestamp) >= thirtyDaysAgo);
+        }
+        // 'lifetime' includes all events - no filtering
+        
+        return events.length;
+    } catch (error) {
+        console.error('Error getting analytics count:', error);
+        return 0;
+    }
 }
 
 // NOTIFICATIONS
